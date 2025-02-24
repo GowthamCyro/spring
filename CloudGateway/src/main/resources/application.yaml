@@ -1,0 +1,56 @@
+server:
+  port: 9090
+
+spring:
+  data:
+    redis:
+      host: redis 
+      port: 6379
+  application:
+    name: Api-Gateway
+  config:
+    import: configserver:${CONFIG_SERVER_URL:http://localhost:9296}
+  cloud:
+    gateway:
+      routes:
+        - id: ORDER-SERVICE
+          uri: http://order-service-svc  # Load balancing with Kubernetes service
+          predicates:
+            - Path=/order/**
+          filters:
+            - name: CircuitBreaker
+              args: 
+                name: ORDER-SERVICE
+                fallbackUri: forward:/orderServiceFallBack
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 1
+        - id: PRODUCT-SERVICE
+          uri: http://product-service-svc  # Load balancing with Kubernetes service
+          predicates:
+            - Path=/product/**
+          filters:
+          - name: CircuitBreaker
+            args: 
+              name: PRODUCT-SERVICE
+              fallbackUri: forward:/productServiceFallBack
+          - name: RequestRateLimiter
+            args:
+              redis-rate-limiter.replenishRate: 1
+              redis-rate-limiter.burstCapacity: 1
+        - id: PAYMENT-SERVICE
+          uri: http://payment-service-svc  # Load balancing with Kubernetes service
+          predicates:
+            - Path=/payment/**
+          filters:
+            - name: CircuitBreaker
+              args: 
+                name: PAYMENT-SERVICE
+                fallbackUri: forward:/paymentServiceFallBack
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 1
+    
+  

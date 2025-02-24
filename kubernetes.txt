@@ -1,0 +1,46 @@
+minikube start
+minikube stop
+kubectl get all
+kubectl get all -o wide -- more info along with ip
+kubectl get deployments
+kubectl get services
+kubectl get ingress
+kubectl get namespaces
+
+
+Here's a simple explanation of Services, Deployments, Ingress, and Namespaces in Kubernetes:
+
+Deployments
+
+Think of a Deployment as a manager that ensures your application (containerized app) is always running in the required state.
+It creates and manages multiple instances (Pods) of your application.
+If a Pod crashes, the Deployment automatically replaces it.
+Example: Running a Node.js API with 3 replicas.
+Services
+
+A Service is like a stable contact number for your application.
+Since Pods can be created and destroyed dynamically, their IPs keep changing. A Service provides a fixed IP and DNS name to access the Pods reliably.
+Example: You have a backend API running in multiple Pods, and you use a Service to expose it to the frontend.
+Ingress
+
+Ingress is like a traffic controller that manages external access to your Kubernetes application using URLs and rules.
+It routes requests from the internet to the correct Service inside the cluster.
+Example: Routing app.com/login to the authentication service and app.com/products to the product service.
+Namespaces
+
+A Namespace is like a separate workspace within a Kubernetes cluster.
+It helps organize and isolate different environments or teams.
+Example: dev, staging, and production Namespaces for different versions of an app.
+
+
+Ex for Deployment :
+kubectl create deployment nginx --image=nginx 
+creates a pod with the image nginx from docker hub.
+
+kubectl describe deployment nginx -- gives information about the deployment nginx
+
+similar to key:value pairs we have selectors:labels in kubernetes which are very important so that the services will identify
+that the all the pods with the same name are actually same.
+
+
+
